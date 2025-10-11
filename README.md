@@ -1,47 +1,128 @@
-# Svelte + TS + Vite
+# Chrome拡張機能テンプレート
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+Svelte + TypeScript + Viteを使用したChrome拡張機能の開発テンプレートです。
 
-## Recommended IDE Setup
+## 概要
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+このテンプレートは、Chrome拡張機能を効率的に開発するための基盤を提供します。モダンなフロントエンド技術スタックを使用し、開発体験を向上させます。
 
-## Need an official Svelte framework?
+## 技術スタック
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+- **Svelte**: 軽量で高性能なフロントエンドフレームワーク
+- **TypeScript**: 型安全性を提供するJavaScriptのスーパーセット
+- **Vite**: 高速なビルドツールと開発サーバー
+- **pnpm**: 効率的なパッケージマネージャー
 
-## Technical considerations
+## 推奨IDE設定
 
-**Why use this over SvelteKit?**
+### VSCode
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+`.vscode/extensions.json`の推奨拡張機能を確認してください。
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## プロジェクト構造
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
-
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from "svelte/store";
-export default writable(0);
 ```
+chrome-extension-template/
+├── src/                    # ソースコード
+│   ├── assets/            # 静的アセット
+│   ├── lib/               # 再利用可能なコンポーネント
+│   │   └── Counter.svelte # カウンターコンポーネント
+│   ├── public/            # 公開ファイル
+│   ├── popup.html         # ポップアップHTML
+│   ├── Popup.svelte       # ポップアップコンポーネント
+│   ├── popup.ts           # ポップアップエントリーポイント
+│   └── index.css          # グローバルスタイル
+├── node_modules/          # 依存関係
+├── .vscode/               # VS Code設定
+│   ├── extensions.json    # 推奨拡張機能
+│   └── settings.json      # ワークスペース設定
+├── biome.json             # Biome設定（リンター・フォーマッター）
+├── flake.lock             # Nix依存関係ロックファイル
+├── flake.nix              # Nix設定ファイル
+├── package.json           # Node.jsプロジェクト設定
+├── pnpm-lock.yaml         # pnpm依存関係ロックファイル
+├── README.md              # プロジェクト説明書
+├── svelte.config.js       # Svelte設定
+├── tsconfig.app.json      # TypeScriptアプリ設定
+├── tsconfig.json          # TypeScript設定
+├── tsconfig.node.json     # TypeScript Node設定
+└── vite.config.ts         # Vite設定
+```
+
+## 開発環境のセットアップ
+
+### Nixを使用した開発環境（推奨）
+
+このプロジェクトはNixを使用して再現可能な開発環境を提供しています。
+
+#### 前提条件
+
+- Nixがインストールされていること
+- Nix Flakesが有効になっていること
+
+#### direnvによるdevShellの自動起動
+
+- nix-direnvを有効化し、
+- .envrcを作成している(内容は.envrc.exampleをコピーすること)
+
+場合、ターミナル上でこのリポジトリに移動(cd)すると自動的にdevShellに入ります。
+
+```bash
+cd chrome-extension-template
+
+# この段階でNix devShellに入る
+# devShell内で依存関係をインストール
+pnpm install
+
+# 本番ビルド
+pnpm build
+```
+
+#### 手動でのdevShellの起動
+
+```bash
+# Nix devShellに入る
+nix develop
+
+# devShell内で依存関係をインストール
+pnpm install
+
+# 本番ビルド
+pnpm build
+```
+
+#### devShellの内容
+
+- **Node.js 24**: 最新のLTSバージョン
+- **pnpm**: 高速なパッケージマネージャー
+- **自動PATH設定**: `node_modules/.bin`が自動的にPATHに追加
+
+### 従来の方法
+
+Nixを使用しない場合は、以下の手順でセットアップしてください。
+
+#### 前提条件
+
+- Node.js (推奨バージョン: 18以上)
+- pnpm
+
+#### インストール
+
+```bash
+# 依存関係のインストール
+pnpm install
+
+# 開発サーバーの起動
+pnpm dev
+
+# 本番ビルド
+pnpm build
+```
+
+## Chrome拡張機能としての使用
+
+1. `pnpm build`を実行してビルドを生成
+2. Chromeの拡張機能管理ページ（chrome://extensions/）を開く
+3. 「デベロッパーモード」を有効にする
+4. 「パッケージ化されていない拡張機能を読み込む」をクリック
+5. `dist`フォルダを選択
