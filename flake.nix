@@ -20,11 +20,17 @@
           packages = with pkgs; [
             nodejs_24
             nodePackages.pnpm
+            playwright-driver.browsers
           ];
           shellHook = ''
             echo "entered devShell"
 
             export PATH="node_modules/.bin:$PATH"
+
+            # playwrightにNixのパスを渡す
+            export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
+            export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
+            export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
           '';
         };
       }
