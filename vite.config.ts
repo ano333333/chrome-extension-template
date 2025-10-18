@@ -40,4 +40,9 @@ export default defineConfig({
 			port: 5173,
 		},
 	},
+	test: {
+		include: ["../tests/units/**/*.test.ts"],
+		name: "unit-tests",
+		environment: "node",
+	},
 });
